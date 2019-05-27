@@ -5,7 +5,10 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lihg.library.toolbar.YDesityUtil;
@@ -24,55 +27,56 @@ public class MainActivity extends AppCompatActivity {
 
         YToolBar toolBar = findViewById(R.id.toolBar);
         toolBar.getTitleView().setText("班级圈");
-        toolBar.getBackBtn().setOnClickListener(new View.OnClickListener() {
+        toolBar.getBackView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "点击返回", Toast.LENGTH_LONG).show();
             }
         });
-        ImageButton rightAddBtn = toolBar.createButtonWithImage(R.mipmap.btn_add);
-        rightAddBtn.setOnClickListener(new View.OnClickListener() {
+        ImageView addView = toolBar.createViewWithImage(R.mipmap.btn_add);
+        addView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "点击+", Toast.LENGTH_LONG).show();
             }
         });
-        toolBar.addRightView(rightAddBtn);
-        ImageButton rightBtn = toolBar.createButtonWithImage(R.mipmap.btn_switch);
-        rightBtn.setOnClickListener(new View.OnClickListener() {
+        toolBar.addRightView(addView);
+
+
+        YToolBar toolBar2 = findViewById(R.id.toolBar2);
+        toolBar2.getTitleView().setVisibility(View.GONE);
+        toolBar2.getBackView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "点击返回", Toast.LENGTH_LONG).show();
+            }
+        });
+        toolBar2.addLeftView(toolBar2.createViewWithText("班级圈"));
+        ImageView switchView2 = toolBar.createViewWithImage(R.mipmap.btn_switch);
+        switchView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "点击切换", Toast.LENGTH_LONG).show();
             }
         });
-        toolBar.addRightView(rightBtn);
-
-        YToolBar toolBar2 = findViewById(R.id.toolBar2);
-        toolBar2.getTitleView().setVisibility(View.GONE);
-        //toolBar2.getBackBtn().setVisibility(View.GONE);
-        toolBar2.getBackBtn().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "点击返回", Toast.LENGTH_LONG).show();
-            }
-        });
-        int left = 0 - YDesityUtil.dp2px(this, 10);
-        toolBar2.addLeftView(toolBar2.createButtonWithText("班级圈"), left, 0);
-        ImageButton rightAddBtn2 = toolBar2.createButtonWithImage(R.mipmap.btn_add);
-        rightAddBtn2.setOnClickListener(new View.OnClickListener() {
+        toolBar2.addRightView(switchView2);
+        ImageView addView2 = toolBar2.createViewWithImage(R.mipmap.btn_add);
+        addView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "点击+", Toast.LENGTH_LONG).show();
             }
         });
-        toolBar2.addRightView(rightAddBtn2);
-        ImageButton rightBtn2 = toolBar2.createButtonWithImage(R.mipmap.btn_switch);
+        toolBar2.addRightView(addView2);
+
+
+        /*TextView rightBtn2 = toolBar2.createViewWithText("切换");//Image(R.mipmap.btn_switch);
         rightBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "点击切换", Toast.LENGTH_LONG).show();
             }
         });
-        toolBar2.addRightView(rightBtn2);
+        toolBar2.addRightView(rightBtn2);//*/
     }
 }

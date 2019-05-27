@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,15 +18,24 @@ public class YToolBar extends FrameLayout {
 
     private Context mContext;
 
-    private int mToolBarHeight;
-    private int mPadding;
+    private boolean mBackViewHide;
+    private boolean mLineViewHide;
+    private int mHeight;
+    private int mBackgroundColor;
+    private int mTextSize;
+    private int mTextColor;
+    private int mViewMargin;
+    private int mImageWidth;
+    private int mImageHeight;
 
     private LinearLayout mLeftLayout;
     private LinearLayout mMiddleLayout;
     private LinearLayout mRightLayout;
 
+    private View mLineView;
     private TextView mTitleView;
-    private ImageButton mBackBtn;
+    private ImageView mBackView;
+
 
     public YToolBar(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -34,26 +44,39 @@ public class YToolBar extends FrameLayout {
     public YToolBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context.getApplicationContext();
-        mToolBarHeight = YDesityUtil.dp2px(mContext, 45);
-        mPadding = YDesityUtil.dp2px(mContext, 15);
+        mBackViewHide = false;
+        mLineViewHide = false;
+        mHeight = YDesityUtil.dp2px(mContext, 45);
+        mBackgroundColor = Color.TRANSPARENT;
+        mTextSize = 18;
+        mTextColor = Color.BLACK;
+        mViewMargin = YDesityUtil.dp2px(mContext, 15);
+        mImageWidth = YDesityUtil.dp2px(mContext, 24);
+        mImageHeight = YDesityUtil.dp2px(mContext, 24);
 
         this.initAttrs(attrs);
         this.initViews();
 
-        this.addBackButton();
+        this.addBackView();
     }
 
     private void initAttrs(AttributeSet attrs) {
-
         TypedArray typedArray = mContext.obtainStyledAttributes(attrs, R.styleable.YToolBar);
-        for (int i = 0; i < typedArray.getIndexCount(); i++) {
-            int attr = typedArray.getIndex(i);
-        }
+        mBackViewHide = typedArray.getBoolean(R.styleable.YToolBar_toolbar_backView_hide, mBackViewHide);
+        mLineViewHide = typedArray.getBoolean(R.styleable.YToolBar_toolbar_lineView_hide, mLineViewHide);
+        mHeight = typedArray.getDimensionPixelSize(R.styleable.YToolBar_toolbar_height, mHeight);
+        mBackgroundColor = typedArray.getColor(R.styleable.YToolBar_toolbar_backgroundColor, mBackgroundColor);
+        mTextSize = typedArray.getDimensionPixelSize(R.styleable.YToolBar_toolbar_textSize, mTextSize);
+        mTextColor = typedArray.getColor(R.styleable.YToolBar_toolbar_textColor, mTextColor);
+        mViewMargin = typedArray.getDimensionPixelSize(R.styleable.YToolBar_toolbar_viewMargin, mViewMargin);
+        mImageWidth = typedArray.getDimensionPixelSize(R.styleable.YToolBar_toolbar_imageWidth, mImageWidth);
+        mImageHeight = typedArray.getDimensionPixelSize(R.styleable.YToolBar_toolbar_imageHeight, mImageHeight);
+        typedArray.recycle();
     }
 
     private void initViews() {
-        this.setLayoutParams(new LayoutParams(-1, mToolBarHeight));
-        this.setBackgroundColor(Color.TRANSPARENT);
+        this.setLayoutParams(new LayoutParams(-1, mHeight));
+        this.setBackgroundColor(mBackgroundColor);
 
         mTitleView = new TextView(mContext);
         mTitleView.setLayoutParams(new LayoutParams(-1, -1));
@@ -62,10 +85,11 @@ public class YToolBar extends FrameLayout {
         mTitleView.setTextColor(Color.BLACK);
         this.addView(mTitleView);
 
-        View lineView = new View(mContext);
-        lineView.setLayoutParams(new LayoutParams(-1, 1, Gravity.BOTTOM));
-        lineView.setBackgroundColor(Color.LTGRAY);
-        this.addView(lineView);
+        mLineView = new View(mContext);
+        mLineView.setVisibility(mLineViewHide ? View.GONE : View.VISIBLE);
+        mLineView.setLayoutParams(new LayoutParams(-1, 1, Gravity.BOTTOM));
+        mLineView.setBackgroundColor(Color.LTGRAY);
+        this.addView(mLineView);
 
         LinearLayout layout = new LinearLayout(mContext);
         layout.setLayoutParams(new LayoutParams(-1, -1));
@@ -79,8 +103,8 @@ public class YToolBar extends FrameLayout {
 
         mMiddleLayout = new LinearLayout(mContext);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-2, -2, 1);
-        params.setMarginStart(mPadding);
-        params.setMarginEnd(mPadding);
+        params.setMarginStart(mViewMargin);
+        params.setMarginEnd(mViewMargin);
         mMiddleLayout.setLayoutParams(params);
         mMiddleLayout.setGravity(Gravity.CENTER_VERTICAL);
         layout.addView(mMiddleLayout);
@@ -91,18 +115,24 @@ public class YToolBar extends FrameLayout {
         layout.addView(mRightLayout);
     }
 
-    private void addBackButton() {
-        mBackBtn = createButtonWithImage(R.mipmap.back);
-        this.addLeftView(mBackBtn);
+    private void addBackView() {
+        mBackView = createViewWithImage(R.mipmap.back);
+        mBackView.setVisibility(mBackViewHide ? View.GONE : View.VISIBLE);
+        this.addLeftView(mBackView);
     }
 
     public void addLeftView(View view) {
-        this.addLeftView(view, mPadding, 0);
+        this.addLeftView(view, mViewMargin, 0);
     }
 
     public void addLeftView(View view, int marginStart, int marginEnd) {
         if (view != null) {
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-2, -2);
+            int w = -2, h = -2;
+            if (view instanceof ImageView) {
+                w = mImageWidth;
+                h = mImageHeight;
+            }
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(w, h);
             params.setMarginStart(marginStart);
             params.setMarginEnd(marginEnd);
             view.setLayoutParams(params);
@@ -117,12 +147,17 @@ public class YToolBar extends FrameLayout {
     }
 
     public void addRightView(View view) {
-        this.addRightView(view, 0, mPadding);
+        this.addRightView(view, 0, mViewMargin);
     }
 
     public void addRightView(View view, int marginStart, int marginEnd) {
         if (view != null) {
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-2, -2);
+            int w = -2, h = -2;
+            if (view instanceof ImageView) {
+                w = mImageWidth;
+                h = mImageHeight;
+            }
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(w, h);
             params.setMarginStart(marginStart);
             params.setMarginEnd(marginEnd);
             view.setLayoutParams(params);
@@ -130,43 +165,42 @@ public class YToolBar extends FrameLayout {
         }
     }
 
-    public ImageButton createButtonWithImage(int resid) {
-        ImageButton btn = new ImageButton(mContext);
-        btn.setBackgroundColor(Color.TRANSPARENT);
-        btn.setImageResource(resid);
-        return btn;
+    public ImageView createViewWithImage(int resid) {
+        ImageView view = new ImageView(mContext);
+        view.setBackgroundColor(Color.TRANSPARENT);
+        view.setImageResource(resid);
+        return view;
     }
 
-    public Button createButtonWithText(int resid) {
-        Button btn = new Button(mContext);
-        btn.setBackgroundColor(Color.TRANSPARENT);
-        btn.setText(resid);
-        btn.setTextSize(15);
-        return btn;
+    public TextView createViewWithText(int resid) {
+        TextView view = new TextView(mContext);
+        view.setText(resid);
+        view.setTextSize(mTextSize);
+        view.setTextColor(mTextColor);
+        return view;
     }
 
-    public Button createButtonWithText(String text) {
-        Button btn = new Button(mContext);
-        btn.setBackgroundColor(Color.TRANSPARENT);
-        btn.setText(text);
-        btn.setTextSize(18);
-        btn.setTextColor(Color.BLACK);
-        return btn;
+    public TextView createViewWithText(String text) {
+        TextView view = new TextView(mContext);
+        view.setText(text);
+        view.setTextSize(mTextSize);
+        view.setTextColor(mTextColor);
+        return view;
+    }
+
+    public View getLineView() {
+        return mLineView;
     }
 
     public TextView getTitleView() {
         return mTitleView;
     }
 
-    public ImageButton getBackBtn() {
-        return mBackBtn;
+    public ImageView getBackView() {
+        return mBackView;
     }
 
-    public int getPadding() {
-        return mPadding;
-    }
-
-    public void setPadding(int padding) {
-        this.mPadding = mPadding;
+    public int getViewMargin() {
+        return mViewMargin;
     }
 }
