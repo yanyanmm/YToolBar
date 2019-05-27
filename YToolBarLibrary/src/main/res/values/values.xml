@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="YToolBar">
         <attr format="boolean" name="toolbar_backView_hide"/>
+        <attr format="boolean" name="toolbar_titleView_hide"/>
         <attr format="boolean" name="toolbar_lineView_hide"/>
         <attr format="reference|color" name="toolbar_backgroundColor"/>
         <attr format="reference|color" name="toolbar_textColor"/>
@@ -10,5 +11,6 @@
         <attr format="dimension" name="toolbar_viewMargin"/>
         <attr format="dimension" name="toolbar_imageWidth"/>
         <attr format="dimension" name="toolbar_imageHeight"/>
+        <attr format="reference|string" name="toolbar_title"/>
     </declare-styleable>
 </resources>

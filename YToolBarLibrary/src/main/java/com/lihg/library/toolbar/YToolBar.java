@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ public class YToolBar extends FrameLayout {
     private Context mContext;
 
     private boolean mBackViewHide;
+    private boolean mTitleViewHide;
     private boolean mLineViewHide;
     private int mHeight;
     private int mBackgroundColor;
@@ -27,6 +29,7 @@ public class YToolBar extends FrameLayout {
     private int mViewMargin;
     private int mImageWidth;
     private int mImageHeight;
+    private String mTitle;
 
     private LinearLayout mLeftLayout;
     private LinearLayout mMiddleLayout;
@@ -45,14 +48,16 @@ public class YToolBar extends FrameLayout {
         super(context, attrs, defStyleAttr);
         mContext = context.getApplicationContext();
         mBackViewHide = false;
+        mTitleViewHide = false;
         mLineViewHide = false;
-        mHeight = YDesityUtil.dp2px(mContext, 45);
+        mHeight = YDesityUtil.dp2px(mContext,45);
         mBackgroundColor = Color.TRANSPARENT;
-        mTextSize = 18;
+        mTextSize = YDesityUtil.sp2px(mContext,18);
         mTextColor = Color.BLACK;
-        mViewMargin = YDesityUtil.dp2px(mContext, 15);
-        mImageWidth = YDesityUtil.dp2px(mContext, 24);
-        mImageHeight = YDesityUtil.dp2px(mContext, 24);
+        mViewMargin = YDesityUtil.dp2px(mContext,15);
+        mImageWidth = YDesityUtil.dp2px(mContext,24);
+        mImageHeight = YDesityUtil.dp2px(mContext,24);
+        mTitle = null;
 
         this.initAttrs(attrs);
         this.initViews();
@@ -63,6 +68,7 @@ public class YToolBar extends FrameLayout {
     private void initAttrs(AttributeSet attrs) {
         TypedArray typedArray = mContext.obtainStyledAttributes(attrs, R.styleable.YToolBar);
         mBackViewHide = typedArray.getBoolean(R.styleable.YToolBar_toolbar_backView_hide, mBackViewHide);
+        mTitleViewHide = typedArray.getBoolean(R.styleable.YToolBar_toolbar_titleView_hide, mTitleViewHide);
         mLineViewHide = typedArray.getBoolean(R.styleable.YToolBar_toolbar_lineView_hide, mLineViewHide);
         mHeight = typedArray.getDimensionPixelSize(R.styleable.YToolBar_toolbar_height, mHeight);
         mBackgroundColor = typedArray.getColor(R.styleable.YToolBar_toolbar_backgroundColor, mBackgroundColor);
@@ -71,29 +77,15 @@ public class YToolBar extends FrameLayout {
         mViewMargin = typedArray.getDimensionPixelSize(R.styleable.YToolBar_toolbar_viewMargin, mViewMargin);
         mImageWidth = typedArray.getDimensionPixelSize(R.styleable.YToolBar_toolbar_imageWidth, mImageWidth);
         mImageHeight = typedArray.getDimensionPixelSize(R.styleable.YToolBar_toolbar_imageHeight, mImageHeight);
+        mTitle = typedArray.getString(R.styleable.YToolBar_toolbar_title);
         typedArray.recycle();
     }
 
     private void initViews() {
-        this.setLayoutParams(new LayoutParams(-1, mHeight));
-        this.setBackgroundColor(mBackgroundColor);
-
-        mTitleView = new TextView(mContext);
-        mTitleView.setLayoutParams(new LayoutParams(-1, -1));
-        mTitleView.setGravity(Gravity.CENTER);
-        mTitleView.setTextSize(18);
-        mTitleView.setTextColor(Color.BLACK);
-        this.addView(mTitleView);
-
-        mLineView = new View(mContext);
-        mLineView.setVisibility(mLineViewHide ? View.GONE : View.VISIBLE);
-        mLineView.setLayoutParams(new LayoutParams(-1, 1, Gravity.BOTTOM));
-        mLineView.setBackgroundColor(Color.LTGRAY);
-        this.addView(mLineView);
-
         LinearLayout layout = new LinearLayout(mContext);
-        layout.setLayoutParams(new LayoutParams(-1, -1));
+        layout.setLayoutParams(new LayoutParams(-1, mHeight));
         layout.setGravity(Gravity.CENTER_VERTICAL);
+        layout.setBackgroundColor(mBackgroundColor);
         this.addView(layout);
 
         mLeftLayout = new LinearLayout(mContext);
@@ -113,12 +105,54 @@ public class YToolBar extends FrameLayout {
         mRightLayout.setLayoutParams(new LinearLayout.LayoutParams(-2, -2));
         mRightLayout.setGravity(Gravity.CENTER_VERTICAL);
         layout.addView(mRightLayout);
+
+        mLineView = new View(mContext);
+        mLineView.setVisibility(mLineViewHide ? View.GONE : View.VISIBLE);
+        mLineView.setLayoutParams(new LayoutParams(-1, 1, Gravity.BOTTOM));
+        mLineView.setBackgroundColor(Color.LTGRAY);
+        this.addView(mLineView);
+
+        mTitleView = new TextView(mContext);
+        mTitleView.setVisibility(mTitleViewHide ? View.GONE : View.VISIBLE);
+        mTitleView.setLayoutParams(new LayoutParams(-1, -1));
+        mTitleView.setGravity(Gravity.CENTER);
+        if (mTitle != null) {
+            mTitleView.setText(mTitle);
+        }
+        mTitleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
+        mTitleView.setTextColor(Color.BLACK);
+        this.addView(mTitleView);
     }
 
     private void addBackView() {
         mBackView = createViewWithImage(R.mipmap.back);
         mBackView.setVisibility(mBackViewHide ? View.GONE : View.VISIBLE);
         this.addLeftView(mBackView);
+    }
+
+    public ImageView createViewWithImage(int resid) {
+        ImageView view = new ImageView(mContext);
+        view.setBackgroundColor(Color.TRANSPARENT);
+        view.setImageResource(resid);
+        return view;
+    }
+
+    public TextView createViewWithText(int resid) {
+        TextView view = new TextView(mContext);
+        view.setText(resid);
+        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
+        view.setTextColor(mTextColor);
+        view.setGravity(Gravity.CENTER);
+        return view;
+    }
+
+    public TextView createViewWithText(String text) {
+        TextView view = new TextView(mContext);
+        view.setText(text);
+        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
+        view.setTextColor(mTextColor);
+        view.setGravity(Gravity.CENTER);
+        return view;
     }
 
     public void addLeftView(View view) {
@@ -135,9 +169,52 @@ public class YToolBar extends FrameLayout {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(w, h);
             params.setMarginStart(marginStart);
             params.setMarginEnd(marginEnd);
+            params.gravity = Gravity.CENTER;
             view.setLayoutParams(params);
             mLeftLayout.addView(view);
         }
+    }
+
+    public void addLeftViewWithImage(int resid) {
+        this.addLeftViewWithImage(resid, null);
+    }
+
+    public void addLeftViewWithImage(int resid, View.OnClickListener listener) {
+        this.addLeftViewWithImage(resid, mViewMargin, 0, listener);
+    }
+
+    public void addLeftViewWithImage(int resid, int marginStart, int marginEnd, View.OnClickListener listener) {
+        ImageView view = this.createViewWithImage(resid);
+        view.setOnClickListener(listener);
+        this.addLeftView(view, marginStart, marginEnd);
+    }
+
+    public void addLeftViewWithText(int resid) {
+        this.addLeftViewWithText(resid, null);
+    }
+
+    public void addLeftViewWithText(int resid, View.OnClickListener listener) {
+        this.addLeftViewWithText(resid, mViewMargin, 0, listener);
+    }
+
+    public void addLeftViewWithText(int resid, int marginStart, int marginEnd, View.OnClickListener listener) {
+        TextView view = this.createViewWithText(resid);
+        view.setOnClickListener(listener);
+        this.addLeftView(view, marginStart, marginEnd);
+    }
+
+    public void addLeftViewWithText(String text) {
+        this.addLeftViewWithText(text, null);
+    }
+
+    public void addLeftViewWithText(String text, View.OnClickListener listener) {
+        this.addLeftViewWithText(text, mViewMargin, 0, listener);
+    }
+
+    public void addLeftViewWithText(String text, int marginStart, int marginEnd, View.OnClickListener listener) {
+        TextView view = this.createViewWithText(text);
+        view.setOnClickListener(listener);
+        this.addLeftView(view, marginStart, marginEnd);
     }
 
     public void addMiddleView(View view) {
@@ -160,32 +237,52 @@ public class YToolBar extends FrameLayout {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(w, h);
             params.setMarginStart(marginStart);
             params.setMarginEnd(marginEnd);
+            params.gravity = Gravity.CENTER;
             view.setLayoutParams(params);
             mRightLayout.addView(view);
         }
     }
 
-    public ImageView createViewWithImage(int resid) {
-        ImageView view = new ImageView(mContext);
-        view.setBackgroundColor(Color.TRANSPARENT);
-        view.setImageResource(resid);
-        return view;
+    public void addRightViewWithImage(int resid) {
+        this.addRightViewWithImage(resid, null);
     }
 
-    public TextView createViewWithText(int resid) {
-        TextView view = new TextView(mContext);
-        view.setText(resid);
-        view.setTextSize(mTextSize);
-        view.setTextColor(mTextColor);
-        return view;
+    public void addRightViewWithImage(int resid, View.OnClickListener listener) {
+        this.addRightViewWithImage(resid, 0, mViewMargin, listener);
     }
 
-    public TextView createViewWithText(String text) {
-        TextView view = new TextView(mContext);
-        view.setText(text);
-        view.setTextSize(mTextSize);
-        view.setTextColor(mTextColor);
-        return view;
+    public void addRightViewWithImage(int resid, int marginStart, int marginEnd, View.OnClickListener listener) {
+        ImageView view = this.createViewWithImage(resid);
+        view.setOnClickListener(listener);
+        this.addRightView(view, marginStart, marginEnd);
+    }
+
+    public void addRightViewWithText(int resid) {
+        this.addRightViewWithText(resid, null);
+    }
+
+    public void addRightViewWithText(int resid, View.OnClickListener listener) {
+        this.addRightViewWithText(resid, 0, mViewMargin, listener);
+    }
+
+    public void addRightViewWithText(int resid, int marginStart, int marginEnd, View.OnClickListener listener) {
+        TextView view = this.createViewWithText(resid);
+        view.setOnClickListener(listener);
+        this.addRightView(view, marginStart, marginEnd);
+    }
+
+    public void addRightViewWithText(String text) {
+        this.addRightViewWithText(text, null);
+    }
+
+    public void addRightViewWithText(String text, View.OnClickListener listener) {
+        this.addRightViewWithText(text, 0, mViewMargin, listener);
+    }
+
+    public void addRightViewWithText(String text, int marginStart, int marginEnd, View.OnClickListener listener) {
+        TextView view = this.createViewWithText(text);
+        view.setOnClickListener(listener);
+        this.addRightView(view, marginStart, marginEnd);
     }
 
     public View getLineView() {

@@ -4,10 +4,12 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,57 +28,67 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         YToolBar toolBar = findViewById(R.id.toolBar);
-        toolBar.getTitleView().setText("班级圈");
         toolBar.getBackView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "点击返回", Toast.LENGTH_LONG).show();
             }
         });
-        ImageView addView = toolBar.createViewWithImage(R.mipmap.btn_add);
-        addView.setOnClickListener(new View.OnClickListener() {
+        toolBar.addRightViewWithImage(R.mipmap.btn_add, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "点击+", Toast.LENGTH_LONG).show();
             }
         });
-        toolBar.addRightView(addView);
 
 
         YToolBar toolBar2 = findViewById(R.id.toolBar2);
-        toolBar2.getTitleView().setVisibility(View.GONE);
         toolBar2.getBackView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "点击返回", Toast.LENGTH_LONG).show();
             }
         });
-        toolBar2.addLeftView(toolBar2.createViewWithText("班级圈"));
-        ImageView switchView2 = toolBar.createViewWithImage(R.mipmap.btn_switch);
-        switchView2.setOnClickListener(new View.OnClickListener() {
+        toolBar2.addLeftViewWithText("班级圈");
+        toolBar2.addRightViewWithImage(R.mipmap.btn_switch, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "点击切换", Toast.LENGTH_LONG).show();
             }
         });
-        toolBar2.addRightView(switchView2);
-        ImageView addView2 = toolBar2.createViewWithImage(R.mipmap.btn_add);
-        addView2.setOnClickListener(new View.OnClickListener() {
+        toolBar2.addRightViewWithImage(R.mipmap.btn_add, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "点击+", Toast.LENGTH_LONG).show();
             }
         });
-        toolBar2.addRightView(addView2);
 
-
-        /*TextView rightBtn2 = toolBar2.createViewWithText("切换");//Image(R.mipmap.btn_switch);
-        rightBtn2.setOnClickListener(new View.OnClickListener() {
+        YToolBar toolBar3 = findViewById(R.id.toolBar3);
+        toolBar3.addLeftViewWithImage(R.mipmap.btn_switch, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "点击切换", Toast.LENGTH_LONG).show();
             }
         });
-        toolBar2.addRightView(rightBtn2);//*/
+        toolBar3.addRightViewWithImage(R.mipmap.btn_switch, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "点击切换", Toast.LENGTH_LONG).show();
+            }
+        });
+        toolBar3.addRightViewWithImage(R.mipmap.btn_add, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "点击+", Toast.LENGTH_LONG).show();
+            }
+        });
+        TextView tv = new TextView(this);
+        tv.setText("点击搜索");
+        tv.setTextColor(Color.LTGRAY);
+        tv.setTextSize(12);
+        tv.setGravity(Gravity.CENTER);
+        tv.setLayoutParams(new LinearLayout.LayoutParams(-1, YDesityUtil.dp2px(this, 30)));
+        tv.setBackgroundResource(R.drawable.editview_style);
+        toolBar3.addMiddleView(tv);
     }
 }

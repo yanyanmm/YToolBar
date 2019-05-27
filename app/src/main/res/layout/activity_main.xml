@@ -8,14 +8,22 @@
     <com.lihg.library.toolbar.YToolBar
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@android:color/transparent"/>
+        android:layout_height="wrap_content"
+        app:toolbar_title="班级圈"/>
     <com.lihg.library.toolbar.YToolBar
         android:id="@+id/toolBar2"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:background="@android:color/transparent"
+        app:toolbar_titleView_hide="true"
         app:layout_constraintTop_toBottomOf="@+id/toolBar"/>
+    <com.lihg.library.toolbar.YToolBar
+        android:id="@+id/toolBar3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        app:toolbar_backView_hide="true"
+        app:toolbar_titleView_hide="true"
+        app:layout_constraintTop_toBottomOf="@+id/toolBar2"/>
 
 </android.support.constraint.ConstraintLayout>
