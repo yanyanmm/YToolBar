@@ -82,6 +82,7 @@ public class YToolBar extends FrameLayout {
     }
 
     private void initViews() {
+        this.setBackgroundColor(mBackgroundColor);
         LinearLayout layout = new LinearLayout(mContext);
         LayoutParams layoutParams = new LayoutParams(-1, mHeight);
         layoutParams.gravity = Gravity.BOTTOM;
@@ -90,7 +91,6 @@ public class YToolBar extends FrameLayout {
         }
         layout.setLayoutParams(layoutParams);
         layout.setGravity(Gravity.CENTER_VERTICAL);
-        layout.setBackgroundColor(mBackgroundColor);
         this.addView(layout);
 
         mLeftLayout = new LinearLayout(mContext);
@@ -125,7 +125,7 @@ public class YToolBar extends FrameLayout {
             mTitleView.setText(mTitle);
         }
         mTitleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
-        mTitleView.setTextColor(Color.BLACK);
+        mTitleView.setTextColor(mTextColor);
         this.addView(mTitleView);
     }
 
