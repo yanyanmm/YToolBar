@@ -119,14 +119,14 @@ public class YToolBar extends FrameLayout {
 
         mTitleView = new TextView(mContext);
         mTitleView.setVisibility(mTitleViewHide ? View.GONE : View.VISIBLE);
-        mTitleView.setLayoutParams(new LayoutParams(-1, -1));
+        mTitleView.setLayoutParams(new LayoutParams(-1, mHeight, Gravity.BOTTOM));
         mTitleView.setGravity(Gravity.CENTER);
         if (mTitle != null) {
             mTitleView.setText(mTitle);
         }
         mTitleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
         mTitleView.setTextColor(Color.BLACK);
-        mMiddleLayout.addView(mTitleView);
+        this.addView(mTitleView);
     }
 
     public int getStatusBarHeight() {
