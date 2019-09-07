@@ -6,14 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lihg.library.toolbar.YDesityUtil;
 import com.lihg.library.toolbar.YToolBar;
 
 public class MainActivity extends AppCompatActivity {
@@ -87,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         tv.setTextColor(Color.LTGRAY);
         tv.setTextSize(12);
         tv.setGravity(Gravity.CENTER);
-        tv.setLayoutParams(new LinearLayout.LayoutParams(-1, YDesityUtil.dp2px(this, 30)));
+        tv.setLayoutParams(new LinearLayout.LayoutParams(-1, YToolBar.dp2px(this, 30)));
         tv.setBackgroundResource(R.drawable.editview_style);
         toolBar3.addMiddleView(tv);
     }

@@ -7,10 +7,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,6 +19,7 @@ public class YToolBar extends FrameLayout {
     private boolean mBackViewHide;
     private boolean mTitleViewHide;
     private boolean mLineViewHide;
+    private boolean mStatusBarHeight;
     private int mHeight;
     private int mBackgroundColor;
     private int mTextSize;
@@ -50,13 +48,14 @@ public class YToolBar extends FrameLayout {
         mBackViewHide = false;
         mTitleViewHide = false;
         mLineViewHide = false;
-        mHeight = YDesityUtil.dp2px(mContext,45);
+        mStatusBarHeight = false;
+        mHeight = dp2px(mContext,45);
         mBackgroundColor = Color.TRANSPARENT;
-        mTextSize = YDesityUtil.sp2px(mContext,18);
+        mTextSize = sp2px(mContext,18);
         mTextColor = Color.BLACK;
-        mViewMargin = YDesityUtil.dp2px(mContext,15);
-        mImageWidth = YDesityUtil.dp2px(mContext,24);
-        mImageHeight = YDesityUtil.dp2px(mContext,24);
+        mViewMargin = dp2px(mContext,15);
+        mImageWidth = dp2px(mContext,24);
+        mImageHeight = dp2px(mContext,24);
         mTitle = null;
 
         this.initAttrs(attrs);
@@ -70,6 +69,7 @@ public class YToolBar extends FrameLayout {
         mBackViewHide = typedArray.getBoolean(R.styleable.YToolBar_toolbar_backView_hide, mBackViewHide);
         mTitleViewHide = typedArray.getBoolean(R.styleable.YToolBar_toolbar_titleView_hide, mTitleViewHide);
         mLineViewHide = typedArray.getBoolean(R.styleable.YToolBar_toolbar_lineView_hide, mLineViewHide);
+        mStatusBarHeight = typedArray.getBoolean(R.styleable.YToolBar_toolbar_status_bar_height, mStatusBarHeight);
         mHeight = typedArray.getDimensionPixelSize(R.styleable.YToolBar_toolbar_height, mHeight);
         mBackgroundColor = typedArray.getColor(R.styleable.YToolBar_toolbar_backgroundColor, mBackgroundColor);
         mTextSize = typedArray.getDimensionPixelSize(R.styleable.YToolBar_toolbar_textSize, mTextSize);
@@ -83,7 +83,12 @@ public class YToolBar extends FrameLayout {
 
     private void initViews() {
         LinearLayout layout = new LinearLayout(mContext);
-        layout.setLayoutParams(new LayoutParams(-1, mHeight));
+        LayoutParams layoutParams = new LayoutParams(-1, mHeight);
+        layoutParams.gravity = Gravity.BOTTOM;
+        if (mStatusBarHeight) {
+            layoutParams.topMargin = getStatusBarHeight();
+        }
+        layout.setLayoutParams(layoutParams);
         layout.setGravity(Gravity.CENTER_VERTICAL);
         layout.setBackgroundColor(mBackgroundColor);
         this.addView(layout);
@@ -121,7 +126,12 @@ public class YToolBar extends FrameLayout {
         }
         mTitleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
         mTitleView.setTextColor(Color.BLACK);
-        this.addView(mTitleView);
+        mMiddleLayout.addView(mTitleView);
+    }
+
+    public int getStatusBarHeight() {
+        int resId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        return getResources().getDimensionPixelSize(resId);
     }
 
     private void addBackView() {
@@ -299,5 +309,13 @@ public class YToolBar extends FrameLayout {
 
     public int getViewMargin() {
         return mViewMargin;
+    }
+
+    public static int dp2px(Context context, float dp) {
+        return (int) TypedValue.applyDimension(1, dp, context.getResources().getDisplayMetrics());
+    }
+
+    public static int sp2px(Context context, float sp) {
+        return (int)TypedValue.applyDimension(2, sp, context.getResources().getDisplayMetrics());
     }
 }

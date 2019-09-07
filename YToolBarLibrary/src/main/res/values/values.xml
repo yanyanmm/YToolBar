@@ -4,6 +4,7 @@
         <attr format="boolean" name="toolbar_backView_hide"/>
         <attr format="boolean" name="toolbar_titleView_hide"/>
         <attr format="boolean" name="toolbar_lineView_hide"/>
+        <attr format="boolean" name="toolbar_status_bar_height"/>
         <attr format="reference|color" name="toolbar_backgroundColor"/>
         <attr format="reference|color" name="toolbar_textColor"/>
         <attr format="dimension" name="toolbar_height"/>
